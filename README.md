@@ -10,6 +10,8 @@ Proyecto que sirve para realizar una votación dentro de un salón de clases usa
 5. Al final de la votación, el sistema debe ser transparente con los votos y permitir que los participantes puedan verificar quién fue el ganador, pero asegurando la privacidad del voto.
 
 ## TODO:
+
 - [ ] Crear estructura del proyecto
 - [ ] Crear frontend con rect (Base)
-- [ ] Crear contratos con solidity (Base)
+- [ ] Crear contratos con solidity (Base)
+ 
