@@ -1,0 +1,24 @@
+{
+  "name": "classroom-vote-system",
+  "version": "0.0.1",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pug": "^2.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ErickAgrazal/classroom-vote-system.git"
+  },
+  "author": "Erick Agrazal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ErickAgrazal/classroom-vote-system/issues"
+  },
+  "homepage": "https://github.com/ErickAgrazal/classroom-vote-system#readme"
+}

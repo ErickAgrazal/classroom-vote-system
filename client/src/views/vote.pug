@@ -1,0 +1,71 @@
+extends includes/base
+
+block content
+    .col-8.mt-5.offset-2
+        .row
+            .col-12.text-center
+                h1 Votar
+        .row
+            form
+                .form-group
+                    label(for='cedula') Ingrese su Cedula
+                    input#cedula(type="text", name="cedula")
+            table.table
+                thead.thead-dark
+                    tr                     
+                        th(scope='col') Nombre del Candidato
+                        th(scope='col') Votar
+                tbody
+                    each candidate in candidates
+                        tr(data-id=candidate.id)
+                            td #{ candidate.name }
+                            td 
+                                input.btn.btn-success.js-btn-vote(type="button", value="Votar")
+
+block extra_js
+    script.
+        (function(){
+            var App = {
+                init: function(){
+                    App.bindEvents();
+                },
+                htmlElements: {
+                    btnVote: $('.js-btn-vote'),
+                },
+                bindEvents: function(){
+                    App.htmlElements.btnVote.on('click', App.eventListeners.onBtnVoteClick);
+                },
+                eventListeners: {
+                    onBtnVoteClick: function(e){
+                        id = $(this).closest('tr').data('id');
+                        App.requests.sendVote(id);
+                    },
+                },
+                requests: {
+                    sendVote: function(id){
+                        const contractJSON = App.requests.fetchContract();
+                        const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+                        const contract = JSON.parse(contractJSON);
+                        const { abi } = contract;
+                        const votingContract = web3.eth.contract(abi);
+                        const candidateId = web3.utils.utf8ToHex(id);
+                        const voterId = web3.utils.utf8ToHex($('#cedula').val());
+                        votingContract.methods.vote(candidateId, voterId).call();
+                    },
+                    fetchContract: async function(){
+                        try{
+                            const res = await $.ajax({
+                                url: 'api/contract',
+                                method: 'POST'
+                            });
+                            return res;
+                        }
+                        catch(e){
+                            console.log('There was an error');
+                            return {};
+                        }
+                    }
+                },
+            };
+            App.init();
+        })();

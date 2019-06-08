@@ -1,0 +1,75 @@
+extends includes/base
+
+block content
+    .col-8.mt-5.offset-2
+        .row
+            .col-12.text-center
+                h1 Registrate
+        .row
+            form.col-12
+                .form-group
+                    label(for='cedula') Cédula
+                    input#cedula.form-control(type="text", name="cedula")
+                .form-check
+                    input.btn.btn-primary.js-btn-register.float-right(type="button", value="Enviar")
+
+
+block extra_js
+    script.
+        (function(){
+            var App = {
+                init: async function(){
+                    App.bindEvents();
+                },
+                controls: {
+                    swalOptions: {
+                        registerSwal: {
+                            title: 'Proceso de Registro',
+                            text: 'Esta seguro que desea registrase',
+                            type: 'Warning',
+                            confirmButtonText: 'registrarme'
+                        }
+                    }
+                },
+                htmlElements: {
+                    btnRegister: $('.js-btn-register'),
+                },
+                bindEvents: function(){
+                    App.htmlElements.btnRegister.on('click', App.eventListeners.onBtnRegisterClick);
+                },
+                eventListeners: {
+                    onBtnRegisterClick: function(e){
+                        Swal.fire(App.controls.swalOptions.registerSwal)
+                            .then( (result) => {
+                                if (result.value) App.requests.sendUserToContract();
+                            });   
+                    }
+                },
+                requests: {
+                    sendUserToContract: function(){
+                        const contractJSON = App.requests.fetchContract();
+                        const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+                        const contract = JSON.parse(contractJSON);
+                        const { abi } = contract;
+                        const votingContract = web3.eth.contract(abi);
+                        const id = web3.utils.utf8ToHex($('#cedula').val());
+                        votingContract.methods.associateUser(id).call();
+                        // TODO SEND DATA TO CONTRACT
+                    },
+                    fetchContract: async function(){
+                        try{
+                            const res = await $.ajax({
+                                url: 'api/contract',
+                                method: 'POST'
+                            });
+                            return res;
+                        }
+                        catch(e){
+                            console.log('There was an error');
+                            return {};
+                        }
+                    }
+                },
+            };
+            App.init();
+        })();
