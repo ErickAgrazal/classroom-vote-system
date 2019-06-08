@@ -3,7 +3,7 @@ const { getVoters, getCandidates } = require('../census');
 
 const { VOTERS_ID, VOTERS_IDENTIFICATION, VOTERS_NAME } = getVoters(web3);
 
-contract("Voting", accounts => {
+contract("Voting contract", accounts => {
   it("...should have deployed the instance.", async () => {
     const VotingInstance = await Voting.deployed();
     assert.ok(VotingInstance);
@@ -19,5 +19,28 @@ contract("Voting", accounts => {
                  candidates[1].map((el) => web3.utils.hexToUtf8(el))[0]);
     assert.equal(CANDIDATES.map((el) => web3.utils.hexToUtf8(el))[CANDIDATES.length],
                  candidates[1].map((el) => web3.utils.hexToUtf8(el))[candidates.length]);
+  });
+  it("...should be able to initialize the voting process.", async () => {
+    const VotingInstance = await Voting.deployed();
+    await VotingInstance.initializeVoting();
+    const votingStatus = await VotingInstance.getVotingStatus();
+    assert.ok(votingStatus);
+  });
+  it("...should be able to finish the voting process.", async () => {
+    const VotingInstance = await Voting.deployed();
+    await VotingInstance.finishVoting();
+    const votingStatus = await VotingInstance.getVotingStatus();
+    assert.ok(!votingStatus);
+  });
+  it("...should be able to receive votes.", async () => {
+    const VotingInstance = await Voting.deployed();
+    const voterIdentification = web3.utils.utf8ToHex(VOTERS_IDENTIFICATION[0]);
+    await VotingInstance.initializeVoting();
+    await VotingInstance.associateUserToAddress(voterIdentification, { from: accounts[1] });
+    await VotingInstance.vote(0, voterIdentification, { from: accounts[1] });
+
+    // If it gets to this point, it's fine!
+    // Refactor possible though... :D
+    assert.ok(true);
   });
 });

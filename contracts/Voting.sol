@@ -84,9 +84,12 @@ contract Voting is Ownable {
     }
 
     function vote(uint8 _candidateId, bytes32 _voterIdentification)  external {
+        // Validadtions
         require(votingIsOpen == true, "Solo se puede votar cuando el tiempo de votación este activo.");
         require(votersListAddressMap[_voterIdentification] == msg.sender, "El votante solo puede votar usando una el address que validó.");
         require(votersListVoted[votersListIdMap[msg.sender]] == false, "Votante solo puede votar una vez.");
+
+        // Incrementing voting count
         uint8 _candidateCount = candidateListVotes[_candidateId] + 1;
 
         // Removing the possibility for this voter to vote again
@@ -104,6 +107,10 @@ contract Voting is Ownable {
 
     function finishVoting() external onlyOwner {
         votingIsOpen = false;
+    }
+
+    function getVotingStatus() external view returns(bool) {
+        return votingIsOpen;
     }
 
     function() external payable {}
