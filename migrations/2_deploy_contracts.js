@@ -1,5 +1,7 @@
 var Voting = artifacts.require("./Voting.sol");
+const { getVoters } = require('../census');
 
 module.exports = function(deployer) {
-  deployer.deploy(Voting);
+  const { VOTERS_ID, VOTERS_IDENTIFICATION, VOTERS_NAME } = getVoters(web3);
+  deployer.deploy(Voting, VOTERS_ID, VOTERS_IDENTIFICATION, VOTERS_NAME);
 };

@@ -1,5 +1,4 @@
-pragma solidity ^0.5.0;
-
+pragma solidity ^0.5.8;
 
 contract Ownable {
    address public owner;
@@ -15,52 +14,97 @@ contract Ownable {
 }
 
 
-contract Encuesthas is Ownable {
-   uint8 counter = 0;
-   bytes32[10] candidatesNames;
-   uint8[10] candidatesVoteCounts;
-   mapping(bytes32 => bool) candidates;
-   mapping(bytes32 => uint8) candidatesIdx;
-   mapping(address => bool) voters;
-   mapping(bytes32 => uint8) candidatesCount;
+contract Voting is Ownable {
+    // Candidates map
+    uint8 candidatesListCounter = 0;
+    uint8[9] private cantidateListId;
+    bytes32[9] private cantidateListName;
+    mapping(uint8 => uint8) candidateListVotes;
+    mapping(bytes32 => bool) candidateValidator;
 
-   event AddedVote(bytes32 candidateName, uint8 candidateVotes);
-   event AddedCandidate(bytes32 candidateStored);
-   event RetrievedCandidate(bytes32[10] candidateRetrieved);
+    // Voters map
+    uint8[27] private votersListId;
+    bytes32[27] private votersListIdentification;
+    bytes32[27] private votersListName;
+    bool[27] private votersListVoted;
+    mapping(bytes32 => address) votersListAddressMap;
+    mapping(address => uint8) votersListIdMap;
 
-   constructor() public {
-       // TODO: Develop a constructor :cara_ligeramente_sonriente:
-   }
+    // Voting starter and finisher
+    bool votingIsOpen;
 
-   modifier onlyNewCandidate(bytes32 _candidate){
-       require(candidates[_candidate] != true, "Candidato solo puede ser añadido una sola vez.");
-       _;
-   }
+    // Events
+    event AddedCandidate(bytes32 candidateStored);
+    event AddedVote(bytes32 candidateName, uint8 candidateVotes);
 
-   function addCandidate(bytes32 _candidate) external onlyNewCandidate(_candidate)  {
-       candidates[_candidate] = true;
-       candidatesCount[_candidate] = 0;
-       candidatesIdx[_candidate] = counter;
+    /**
+     * Constructor. Initialize the voters.
+     */
+    constructor(uint8[27] memory _votersListId,
+                bytes32[27] memory _votersListIdentification,
+                bytes32[27] memory _votersListName) public {
+        votersListId = _votersListId;
+        votersListIdentification = _votersListIdentification;
+        votersListName = _votersListName;
+    }
 
-       candidatesNames[counter] = _candidate;
-       candidatesVoteCounts[counter] = 0;
+    /**
+     * We will only be accepting one candidate. The validation is being
+     * done using the candidate name.
+     */
+    modifier onlyNewCandidate(bytes32 _candidate){
+        require(candidateValidator[_candidate] != true, "Candidato solo puede ser añadido una sola vez.");
+        _;
+    }
 
-       counter = counter + 1;
-       emit AddedCandidate(_candidate);
-   }
+    function getCandidates() external view returns(uint8[9] memory, bytes32[9] memory) {
+        return (cantidateListId, cantidateListName);
+    }
 
-   function addVoteToCandidate(bytes32 _candidate) external {
-       uint8 _candidateCount = candidatesCount[_candidate] + 1;
-       candidatesCount[_candidate] = _candidateCount;
+    function getCandidatesVotes(uint8 _candidateId) external view onlyOwner returns(uint8) {
+        return candidateListVotes[_candidateId];
+    }
 
-       candidatesVoteCounts[candidatesIdx[_candidate]] = _candidateCount;
-       voters[msg.sender] = true;
-       emit AddedVote(_candidate, _candidateCount);
-   }
+    function associateUserToAddress(bytes32 _voterIdentification) external {
+        votersListAddressMap[_voterIdentification] = msg.sender;
+    }
 
-   function getCandidates() external view returns(bytes32[10] memory, uint8[10] memory) {
-       return (candidatesNames, candidatesVoteCounts);
-   }
+    function addCandidate(bytes32 _candidate) external onlyNewCandidate(_candidate)  {
+        // Storing candidate
+        cantidateListId[candidatesListCounter] = candidatesListCounter;
+        cantidateListName[candidatesListCounter] = _candidate;
+        candidateListVotes[candidatesListCounter] = 0;
 
-   function() external payable {}
+        // Adding the validator to true for next try
+        candidateValidator[_candidate] = true;
+
+        // Adds a new list counter for the next candidate
+        candidatesListCounter = candidatesListCounter + 1;
+        emit AddedCandidate(_candidate);
+    }
+
+    function vote(uint8 _candidateId, bytes32 _voterIdentification)  external {
+        require(votingIsOpen == true, "Solo se puede votar cuando el tiempo de votación este activo.");
+        require(votersListAddressMap[_voterIdentification] == msg.sender, "El votante solo puede votar usando una el address que validó.");
+        require(votersListVoted[votersListIdMap[msg.sender]] == false, "Votante solo puede votar una vez.");
+        uint8 _candidateCount = candidateListVotes[_candidateId] + 1;
+
+        // Removing the possibility for this voter to vote again
+        votersListVoted[votersListIdMap[msg.sender]] = true;
+
+        // Asigning the new votes to the candidate
+        candidateListVotes[_candidateId] = _candidateCount;
+
+        emit AddedVote(cantidateListName[_candidateId], _candidateCount);
+    }
+
+    function initializeVoting() external onlyOwner {
+        votingIsOpen = true;
+    }
+
+    function finishVoting() external onlyOwner {
+        votingIsOpen = false;
+    }
+
+    function() external payable {}
 }
