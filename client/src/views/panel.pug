@@ -4,17 +4,16 @@ block content
     .col-8.mt-5.offset-2
         .row
             .col-12.text-center
-                h1 Votar
+                h1 Panel de Administración
         .row
-            form
-                .form-group
-                    label(for='cedula') Ingrese su Cedula
-                    input#cedula(type="text", name="cedula")
-            table.table
+            .form-group
+                input.btn.btn-primary.js-btn-open-vote(type="button", value="Abrir votación")
+                input.btn.btn-danger.js-btn-close-vote.ml-2(type="button", value="Cerrar votación")
+            table.table(style='display:none;')
                 thead.thead-dark
                     tr                     
                         th(scope='col') Nombre del Candidato
-                        th(scope='col') Votar
+                        th(scope='col') Cantidad de Votos
                 tbody
 
 block extra_js
@@ -23,28 +22,20 @@ block extra_js
             var App = {
                 init: async function(){
                     await App.bindEvents();
-                    await App.buildCandidateTable();
                 },
-                buildCandidateTable: async function(){
-                    let candidates, index;
-                    try{
-                        candidates = await App.requests.fetchCandidatesFromContract();
-                    }
-                    catch(e){
-                        console.log(e);
-                    }
-                    for(index = 0; index < candidates[0].length; index++ ){
-                        let candidateName = App.config.web3.utils.hexToUtf8(candidates[1][index]);
-                        let candidateId = candidates[0][index];
+                drawResultsTable: async function(){
+                    let index;
+                    App.htmlElements.candidateTable.show();
+                    const votes = await App.requests.fetchResults();
+                    for(index = 0; index < votes[0].length; index++ ){
+                        let candidateName = App.config.web3.utils.hexToUtf8(votes[0][index]);
+                        let votesQty = votes[1][index];
                         $('.table > tbody').append(
-                                                    `<tr data-id='${candidateId}'>
+                                                    `<tr>
                                                         <td>${candidateName}</td> 
-                                                        <td>
-                                                            <input class='btn btn-success js-btn-vote' type='button' value='Votar'>
-                                                        </td>
+                                                        <td>${votesQty}</td>
                                                     </tr>`);
                     }
-                    $('.js-btn-vote').on('click', App.eventListeners.onBtnVoteClick);
                 },
                 config: {
                     account: undefined,
@@ -53,20 +44,29 @@ block extra_js
                 },
                 controls: {
                     swalOptions: {
-                        voteSwal: {
-                            title: 'Proceso de Votación',
-                            text: '¿Está seguro que desea votar por este candidato?',
+                        openVote: {
+                            title: 'Abrir Proceso de Votación',
+                            text: '¿Está seguro que desea abrir el proceso de votación por este candidato?',
                             type: 'warning',
                             confirmButtonText: 'Votar',
-                        }
+                        },
+                        closeVote: {
+                            title: 'Proceso de Votación',
+                            text: '¿Está seguro que desea cerrar el proceso de votación?',
+                            type: 'warning',
+                            confirmButtonText: 'Votar',
+                        },
                     }
                 },
                 htmlElements: {
                     candidateTable: $('.table'),
-                    btnVote: $('.js-btn-vote'),
+                    btnOpen: $('.js-btn-open-vote'),
+                    btnClose: $('.js-btn-close-vote')
                 },
                 bindEvents: async function(){
                     await App.associateWeb3Provider();
+                    App.htmlElements.btnOpen.on('click', App.eventListeners.onBtnOpenClick);
+                    App.htmlElements.btnClose.on('click', App.eventListeners.onBtnCloseClick);
                 },
                 associateWeb3Provider: async function(){
                     // Load WEB3
@@ -92,15 +92,24 @@ block extra_js
                     App.config.account = accounts[0];
                 },
                 eventListeners: {
-                    onBtnVoteClick: function(e){
-                        Swal.fire(App.controls.swalOptions.voteSwal)
+                    onBtnOpenClick: function(e){
+                        Swal.fire(App.controls.swalOptions.openVote)
                             .then( (result) => {
-                                if (result.value) App.requests.sendVote($(this).closest('tr').data('id'));
+                                if (result.value) App.requests.openVotePeriod();
                             });   
-                    }
+                    },
+                    onBtnCloseClick: function(e){
+                        Swal.fire(App.controls.swalOptions.closeVote)
+                            .then( async (result) => {
+                                if (result.value){
+                                    await App.requests.closeVotePeriod();
+                                    App.drawResultsTable();
+                                }
+                            });   
+                    },
                 },
                 requests: {
-                    sendVote: async function(candidateId){
+                    openVotePeriod: async function(){
                         // Reload account
                         App.associateWeb3Provider();
 
@@ -108,11 +117,19 @@ block extra_js
                         const contractJSON = await App.requests.fetchContract();
                         const { abi } = contractJSON;
                         const votingContract = new App.config.web3.eth.Contract(abi, App.config.contractAddress);
-                        const voterId = App.config.web3.utils.utf8ToHex($('#cedula').val());
-                        const candidateIdInHex = App.config.web3.utils.utf8ToHex(candidateId);
-                        const resp = await votingContract.methods.vote(candidateIdInHex, voterId).send({from: App.config.account});
+                        await votingContract.methods.initializeVoting().send({from: App.config.account});
                     },
-                    fetchCandidatesFromContract: async function(){
+                    closeVotePeriod: async function(){
+                        // Reload account
+                        App.associateWeb3Provider();
+
+                        // Continue
+                        const contractJSON = await App.requests.fetchContract();
+                        const { abi } = contractJSON;
+                        const votingContract = new App.config.web3.eth.Contract(abi, App.config.contractAddress);
+                        await votingContract.methods.finishVoting().send({from: App.config.account});
+                    },
+                    fetchResults: async function(){
                          // Reload account
                         App.associateWeb3Provider();
 
@@ -120,7 +137,7 @@ block extra_js
                         const contractJSON = await App.requests.fetchContract();
                         const { abi } = contractJSON;
                         const votingContract = new App.config.web3.eth.Contract(abi, App.config.contractAddress);
-                        return votingContract.methods.getCandidates().call({from: App.config.account});
+                        return votingContract.methods.getCandidatesVotes().call({from: App.config.account});
                     },
                     fetchContract: async function(){
                         return $.ajax({

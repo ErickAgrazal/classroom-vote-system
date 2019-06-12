@@ -16,6 +16,10 @@ router.get('/votar', async (req, res) => {
     res.render('vote');
 });
 
+router.get('/panel', async (req, res) => {
+    res.render('panel');
+});
+
 router.post('/api/contract', (req, res) => {
     res.json(contract).status(200);
 });
