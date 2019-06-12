@@ -3,12 +3,17 @@ extends includes/base
 block content
     .col-8.mt-5.offset-2
         .row
-            .col-12.text-center
+            .col-md-12.text-center
                 h1 Registrate
-        .row
-            form.col-12
+        .row.pt-5
+            form.col-8.offset-2
+                h5 Descripción:
+                p Este es un formulario para el registro de los potenciales votantes.
+                hr
                 .form-group
-                    label(for='cedula') Cédula
+                    label(for='cedula') 
+                        strong 
+                            | Introduzca su Cédula:
                     input#cedula.form-control(type="text", name="cedula")
                 .form-check
                     input.btn.btn-primary.js-btn-register.float-right(type="button", value="Enviar")
@@ -25,9 +30,9 @@ block extra_js
                     swalOptions: {
                         registerSwal: {
                             title: 'Proceso de Registro',
-                            text: 'Esta seguro que desea registrase',
-                            type: 'Warning',
-                            confirmButtonText: 'registrarme'
+                            text: '¿Está seguro que desea registrarse?',
+                            type: 'warning',
+                            confirmButtonText: 'Registrarme'
                         }
                     }
                 },
@@ -53,7 +58,8 @@ block extra_js
                         const { abi } = contract;
                         const votingContract = web3.eth.contract(abi);
                         const id = web3.utils.utf8ToHex($('#cedula').val());
-                        votingContract.methods.associateUser(id).call();
+                        const resp = await votingContract.methods.associateUser(id);
+                        console.log(resp);
                         // TODO SEND DATA TO CONTRACT
                     },
                     fetchContract: async function(){
