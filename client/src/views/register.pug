@@ -24,12 +24,12 @@ block extra_js
         (function(){
             var App = {
                 init: async function(){
-                    App.bindEvents();
+                    await App.bindEvents();
                 },
                 config: {
                     account: undefined,
                     web3: undefined,
-                    contractAddress: '0x11630C7AafaAfa138E983812ec589A2A858058B0'
+                    contractAddress: '0xDFDed20A8ff70f2864F91edF0D2B143E0260dC55'
                 },
                 controls: {
                     swalOptions: {
@@ -44,14 +44,31 @@ block extra_js
                 htmlElements: {
                     btnRegister: $('.js-btn-register'),
                 },
-                bindEvents: function(){
-                    App.associateWeb3Provider();
+                bindEvents: async function(){
+                    await App.associateWeb3Provider();
                     App.htmlElements.btnRegister.on('click', App.eventListeners.onBtnRegisterClick);
                 },
                 associateWeb3Provider: async function(){
                     // Load WEB3
-                    App.config.web3 = new Web3(Web3.givenProvider || new Web3.providers.HttpProvider('http://127.0.0.1:8545'));
-                    const accounts = await App.config.web3.eth.getAccounts();
+                    let accounts = undefined;
+                    if (window.ethereum) { // for modern DApps browser
+                        web3 = new Web3(ethereum);
+                        try {
+                            await ethereum.enable();
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    } else if (web3) { // for old DApps browser
+                        web3 = new Web3(web3.currentProvider);
+                    } else {
+                        console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+                    }
+
+                    if(web3!== 'undefined'){
+                        accounts = await web3.eth.getAccounts();
+                    }
+
+                    App.config.web3 = web3;
                     App.config.account = accounts[0];
                 },
                 eventListeners: {
@@ -64,14 +81,15 @@ block extra_js
                 },
                 requests: {
                     sendUserToContract: async function(){
+                        // Reload account
+                        App.associateWeb3Provider();
+
+                        // Continue
                         const contractJSON = await App.requests.fetchContract();
                         const { abi } = contractJSON;
                         const votingContract = new App.config.web3.eth.Contract(abi, App.config.contractAddress);
                         const id = App.config.web3.utils.utf8ToHex($('#cedula').val());
-                        alert(App.config.account);
                         const resp = await votingContract.methods.associateUserToAddress(id).send({from: App.config.account});
-                        console.log(resp);
-                        // TODO SEND DATA TO CONTRACT
                     },
                     fetchContract: async function(){
                         return $.ajax({
@@ -80,11 +98,6 @@ block extra_js
                         });
                     }
                 },
-                loadAccounts: function(){
-                    console.log(App.config.web3.eth.accounts);
-                    console.log(App.config.web3.eth.accounts[0]);
-                    App.config.account = App.config.web3.eth.accounts[0];
-                }
             };
             App.init();
         })();
