@@ -29,7 +29,7 @@ block extra_js
                 config: {
                     account: undefined,
                     web3: undefined,
-                    contractAddress: '0xa3a14bDb6fe088EAc1cbf1CEebD161295fbA3C81'
+                    contractAddress: '0x11630C7AafaAfa138E983812ec589A2A858058B0'
                 },
                 controls: {
                     swalOptions: {
@@ -50,21 +50,9 @@ block extra_js
                 },
                 associateWeb3Provider: async function(){
                     // Load WEB3
-                    if(typeof web3 !== 'undefined') {
-                        // Check wether it's already injected by something 
-                        // else (like Metamask or Parity Chrome plugin)
-                        web3 = new Web3(web3.currentProvider);
-                    } else {
-                        // Or connect to a node
-                        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-                    }
-
-                    // Check the connection
-                    if(!await web3.eth.net.isListening()) {
-                        console.error("Not connected");
-                    }
-                    App.config.web3 = web3;
-                    App.loadAccounts();
+                    App.config.web3 = new Web3(Web3.givenProvider || new Web3.providers.HttpProvider('http://127.0.0.1:8545'));
+                    const accounts = await App.config.web3.eth.getAccounts();
+                    App.config.account = accounts[0];
                 },
                 eventListeners: {
                     onBtnRegisterClick: function(e){
@@ -76,10 +64,6 @@ block extra_js
                 },
                 requests: {
                     sendUserToContract: async function(){
-                        // Reload account in case something changed
-                        App.loadAccounts();
-
-                        // Continue
                         const contractJSON = await App.requests.fetchContract();
                         const { abi } = contractJSON;
                         const votingContract = new App.config.web3.eth.Contract(abi, App.config.contractAddress);
