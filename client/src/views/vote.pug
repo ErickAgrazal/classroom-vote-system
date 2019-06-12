@@ -16,54 +16,116 @@ block content
                         th(scope='col') Nombre del Candidato
                         th(scope='col') Votar
                 tbody
-                    each candidate in candidates
-                        tr(data-id=candidate.id)
-                            td #{ candidate.name }
-                            td 
-                                input.btn.btn-success.js-btn-vote(type="button", value="Votar")
+                    tr
+                        td
+                        td 
+                            input.btn.btn-success.js-btn-vote(type="button", value="Votar")
 
 block extra_js
     script.
         (function(){
             var App = {
-                init: function(){
-                    App.bindEvents();
+                init: async function(){
+                    await App.bindEvents();
+                    await App.buildCandidateTable();
+                    
+                },
+                buildCandidateTable: async function(){
+                    let voters;
+                    try{
+                        voters = await App.requests.fetchVotersFromContract();
+                    }
+                    catch(e){
+                        console.log(e);
+                    }
+                    console.log('hola');
+                    console.log(voters);
+                    console.log(App.htmlElements.candidateTable.next('tbody'));
+                    //- for(const voter of voters){
+                    //-     App.htmlElements.candidateTable.next('tbody')
+                    //- }
+                },
+                config: {
+                    account: undefined,
+                    web3: undefined,
+                    contractAddress: '0xF0905095a62bD868e6cf8A85CC6C66133a6B84fD'
+                },
+                controls: {
+                    swalOptions: {
+                        voteSwal: {
+                            title: 'Proceso de Votación',
+                            text: '¿Está seguro que desea votar por este candidato?',
+                            type: 'warning',
+                            confirmButtonText: 'Votar',
+                        }
+                    }
                 },
                 htmlElements: {
+                    candidateTable: $('.table'),
                     btnVote: $('.js-btn-vote'),
                 },
-                bindEvents: function(){
+                bindEvents: async function(){
+                    await App.associateWeb3Provider();
                     App.htmlElements.btnVote.on('click', App.eventListeners.onBtnVoteClick);
+                },
+                associateWeb3Provider: async function(){
+                    // Load WEB3
+                    let accounts = undefined;
+                    if (window.ethereum) { // for modern DApps browser
+                        web3 = new Web3(ethereum);
+                        try {
+                            await ethereum.enable();
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    } else if (web3) { // for old DApps browser
+                        web3 = new Web3(web3.currentProvider);
+                    } else {
+                        console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+                    }
+
+                    if(web3!== 'undefined'){
+                        accounts = await web3.eth.getAccounts();
+                    }
+
+                    App.config.web3 = web3;
+                    App.config.account = accounts[0];
                 },
                 eventListeners: {
                     onBtnVoteClick: function(e){
-                        id = $(this).closest('tr').data('id');
-                        App.requests.sendVote(id);
-                    },
+                        Swal.fire(App.controls.swalOptions.voteSwal)
+                            .then( (result) => {
+                                if (result.value) App.requests.sendVote();
+                            });   
+                    }
                 },
                 requests: {
-                    sendVote: function(id){
-                        const contractJSON = App.requests.fetchContract();
-                        const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-                        const contract = JSON.parse(contractJSON);
-                        const { abi } = contract;
-                        const votingContract = web3.eth.contract(abi);
-                        const candidateId = web3.utils.utf8ToHex(id);
-                        const voterId = web3.utils.utf8ToHex($('#cedula').val());
-                        votingContract.methods.vote(candidateId, voterId).call();
+                    sendVote: async function(){
+                        // Reload account
+                        App.associateWeb3Provider();
+
+                        // Continue
+                        const contractJSON = await App.requests.fetchContract();
+                        const { abi } = contractJSON;
+                        const votingContract = new App.config.web3.eth.Contract(abi, App.config.contractAddress);
+                        const id = App.config.web3.utils.utf8ToHex($('#cedula').val());
+                        const resp = await votingContract.methods.associateUserToAddress(id).send({from: App.config.account});
+                    },
+                    fetchVotersFromContract: async function(){
+                         // Reload account
+                        App.associateWeb3Provider();
+
+                        // Continue
+                        const contractJSON = await App.requests.fetchContract();
+                        const { abi } = contractJSON;
+                        const votingContract = new App.config.web3.eth.Contract(abi, App.config.contractAddress);
+                        return votingContract.methods.getCandidates().call({from: App.config.account});
                     },
                     fetchContract: async function(){
-                        try{
-                            const res = await $.ajax({
-                                url: 'api/contract',
-                                method: 'POST'
-                            });
-                            return res;
-                        }
-                        catch(e){
-                            console.log('There was an error');
-                            return {};
-                        }
+                        return $.ajax({
+                            url: 'api/contract',
+                            method: 'POST'
+                        });
                     }
                 },
             };
