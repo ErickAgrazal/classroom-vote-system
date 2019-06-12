@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 const Web3 = require('web3');
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-const file = fs.readFileSync(path.join(__dirname, '../contracts/Voting.json'));
+const file = fs.readFileSync(path.join(__dirname, '..', 'contracts/Voting.json'));
 const contract = JSON.parse(file);
 const { abi } = contract;
 const VotingContract = web3.eth.Contract(abi, contract.networks['1559955224305'].address);
@@ -34,7 +34,8 @@ router.get('/votar', async (req, res) => {
     res.render('vote', { candidates });
 });
 
-router.post('api/contract', (req, res) => {
+router.post('/api/contract', (req, res) => {
+    console.log(contract);
     res.json(contract).status(200);
 });
 

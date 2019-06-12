@@ -26,6 +26,11 @@ block extra_js
                 init: async function(){
                     App.bindEvents();
                 },
+                config: {
+                    account: undefined,
+                    web3: undefined,
+                    contractAddress: '0xa3a14bDb6fe088EAc1cbf1CEebD161295fbA3C81'
+                },
                 controls: {
                     swalOptions: {
                         registerSwal: {
@@ -40,7 +45,26 @@ block extra_js
                     btnRegister: $('.js-btn-register'),
                 },
                 bindEvents: function(){
+                    App.associateWeb3Provider();
                     App.htmlElements.btnRegister.on('click', App.eventListeners.onBtnRegisterClick);
+                },
+                associateWeb3Provider: async function(){
+                    // Load WEB3
+                    if(typeof web3 !== 'undefined') {
+                        // Check wether it's already injected by something 
+                        // else (like Metamask or Parity Chrome plugin)
+                        web3 = new Web3(web3.currentProvider);
+                    } else {
+                        // Or connect to a node
+                        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+                    }
+
+                    // Check the connection
+                    if(!await web3.eth.net.isListening()) {
+                        console.error("Not connected");
+                    }
+                    App.config.web3 = web3;
+                    App.loadAccounts();
                 },
                 eventListeners: {
                     onBtnRegisterClick: function(e){
@@ -51,31 +75,32 @@ block extra_js
                     }
                 },
                 requests: {
-                    sendUserToContract: function(){
-                        const contractJSON = App.requests.fetchContract();
-                        const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-                        const contract = JSON.parse(contractJSON);
-                        const { abi } = contract;
-                        const votingContract = web3.eth.contract(abi);
-                        const id = web3.utils.utf8ToHex($('#cedula').val());
-                        const resp = await votingContract.methods.associateUser(id);
+                    sendUserToContract: async function(){
+                        // Reload account in case something changed
+                        App.loadAccounts();
+
+                        // Continue
+                        const contractJSON = await App.requests.fetchContract();
+                        const { abi } = contractJSON;
+                        const votingContract = new App.config.web3.eth.Contract(abi, App.config.contractAddress);
+                        const id = App.config.web3.utils.utf8ToHex($('#cedula').val());
+                        alert(App.config.account);
+                        const resp = await votingContract.methods.associateUserToAddress(id).send({from: App.config.account});
                         console.log(resp);
                         // TODO SEND DATA TO CONTRACT
                     },
                     fetchContract: async function(){
-                        try{
-                            const res = await $.ajax({
-                                url: 'api/contract',
-                                method: 'POST'
-                            });
-                            return res;
-                        }
-                        catch(e){
-                            console.log('There was an error');
-                            return {};
-                        }
+                        return $.ajax({
+                            url: 'api/contract',
+                            method: 'POST'
+                        });
                     }
                 },
+                loadAccounts: function(){
+                    console.log(App.config.web3.eth.accounts);
+                    console.log(App.config.web3.eth.accounts[0]);
+                    App.config.account = App.config.web3.eth.accounts[0];
+                }
             };
             App.init();
         })();
