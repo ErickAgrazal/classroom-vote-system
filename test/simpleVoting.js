@@ -10,14 +10,11 @@ contract("Voting contract", accounts => {
   });
   it("...should have stored the candidates.", async () => {
     const VotingInstance = await Voting.deployed();
-    const { CANDIDATES } = getCandidates(web3);
-    for(let i=0; i<CANDIDATES.length; i+=1) {
-      await VotingInstance.addCandidate(CANDIDATES[i]);
-    };
+    const { CANDIDATES_NAME } = getCandidates(web3);
     const candidates = await VotingInstance.getCandidates();
-    assert.equal(CANDIDATES.map((el) => web3.utils.hexToUtf8(el))[0],
+    assert.equal(CANDIDATES_NAME.map((el) => web3.utils.hexToUtf8(el))[0],
                  candidates[1].map((el) => web3.utils.hexToUtf8(el))[0]);
-    assert.equal(CANDIDATES.map((el) => web3.utils.hexToUtf8(el))[CANDIDATES.length],
+    assert.equal(CANDIDATES_NAME.map((el) => web3.utils.hexToUtf8(el))[CANDIDATES_NAME.length],
                  candidates[1].map((el) => web3.utils.hexToUtf8(el))[candidates.length]);
   });
   it("...should not be able to let voters add twice the same ID.", async () => {

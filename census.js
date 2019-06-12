@@ -60,7 +60,7 @@ let VOTERS_NAME = [
   'ZAMORA, HECTOR',
 ]
 
-const CANDIDATES = [
+const CANDIDATES_NAME = [
   'grupo #1',
   'grupo #2',
   'grupo #3',
@@ -70,7 +70,9 @@ const CANDIDATES = [
   'grupo #7',
   'grupo #8',
   'grupo #9',
-]
+];
+
+const CANDIDATES_ID = [...Array(9).keys()]
 
 function getVoters(web3){
     return {
@@ -82,7 +84,8 @@ function getVoters(web3){
 
 function getCandidates(web3){
   return {
-    CANDIDATES: CANDIDATES.map((el) => web3.utils.utf8ToHex(el) ),
+    CANDIDATES_ID,
+    CANDIDATES_NAME: CANDIDATES_NAME.map((el) => web3.utils.utf8ToHex(el) ),
   }
 }
 

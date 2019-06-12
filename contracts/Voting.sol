@@ -45,13 +45,21 @@ contract Voting is Ownable {
      */
     constructor(uint8[27] memory _votersListId,
                 bytes32[27] memory _votersListIdentification,
-                bytes32[27] memory _votersListName) public {
+                bytes32[27] memory _votersListName,
+                uint8[9] memory _cantidateListId,
+                bytes32[9] memory _cantidateListName) public {
+
+        // Voters initialization
         votersListId = _votersListId;
         votersListIdentification = _votersListIdentification;
         votersListName = _votersListName;
         for( uint8 i = 0 ; i < 27; i++){
             votersListValidator[votersListIdentification[i]] = false;
         }
+
+        // Candidates initialization
+        cantidateListId = _cantidateListId;
+        cantidateListName = _cantidateListName;
     }
 
     /**
@@ -81,7 +89,7 @@ contract Voting is Ownable {
         return (msg.sender, _voterIdentification);
     }
 
-    function addCandidate(bytes32 _candidate) external onlyOwner onlyNewCandidate(_candidate)  {
+    function addCandidate(bytes32 _candidate) internal onlyOwner onlyNewCandidate(_candidate)  {
         // Storing candidate
         cantidateListId[candidatesListCounter] = candidatesListCounter;
         cantidateListName[candidatesListCounter] = _candidate;
