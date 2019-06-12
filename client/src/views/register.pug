@@ -90,6 +90,7 @@ block extra_js
                         const votingContract = new App.config.web3.eth.Contract(abi, App.config.contractAddress);
                         const id = App.config.web3.utils.utf8ToHex($('#cedula').val());
                         const resp = await votingContract.methods.associateUserToAddress(id).send({from: App.config.account});
+                        console.log(resp);
                     },
                     fetchContract: async function(){
                         return $.ajax({

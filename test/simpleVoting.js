@@ -20,6 +20,16 @@ contract("Voting contract", accounts => {
     assert.equal(CANDIDATES.map((el) => web3.utils.hexToUtf8(el))[CANDIDATES.length],
                  candidates[1].map((el) => web3.utils.hexToUtf8(el))[candidates.length]);
   });
+  it("...should not be able to let voters add twice the same ID.", async () => {
+    const VotingInstance = await Voting.deployed();
+    const resp1 = await VotingInstance.associateUserToAddress(VOTERS_IDENTIFICATION[0]);
+    try {
+      const resp2 = await VotingInstance.associateUserToAddress(VOTERS_IDENTIFICATION[0]);
+      assert.ok(false, "The contract shoult not let voters add twice the same ID.");
+    } catch (error) {
+      assert.ok(true);
+    }
+  });
   it("...should be able to initialize the voting process.", async () => {
     const VotingInstance = await Voting.deployed();
     await VotingInstance.initializeVoting();

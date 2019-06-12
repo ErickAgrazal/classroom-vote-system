@@ -19,6 +19,7 @@ contract Voting is Ownable {
     uint8 candidatesListCounter = 0;
     uint8[9] private cantidateListId;
     bytes32[9] private cantidateListName;
+    // Candidates utilities
     mapping(uint8 => uint8) candidateListVotes;
     mapping(bytes32 => bool) candidateValidator;
 
@@ -27,8 +28,10 @@ contract Voting is Ownable {
     bytes32[27] private votersListIdentification;
     bytes32[27] private votersListName;
     bool[27] private votersListVoted;
-    mapping(bytes32 => address) votersListAddressMap;
-    mapping(address => uint8) votersListIdMap;
+    // Voters utilities
+    mapping(bytes32 => address) private votersListAddressMap;
+    mapping(bytes32 => bool) private votersListValidator;
+    mapping(address => uint8) private votersListIdMap;
 
     // Voting starter and finisher
     bool votingIsOpen;
@@ -46,6 +49,9 @@ contract Voting is Ownable {
         votersListId = _votersListId;
         votersListIdentification = _votersListIdentification;
         votersListName = _votersListName;
+        for( uint8 i = 0 ; i < 27; i++){
+            votersListValidator[votersListIdentification[i]] = false;
+        }
     }
 
     /**
@@ -54,6 +60,10 @@ contract Voting is Ownable {
      */
     modifier onlyNewCandidate(bytes32 _candidate){
         require(candidateValidator[_candidate] != true, "Candidato solo puede ser añadido una sola vez.");
+        _;
+    }
+    modifier onlyValidVoter(bytes32 _voterIdentification){
+        require(votersListValidator[_voterIdentification] != true, "Votante solo puede ser verificado una sola vez.");
         _;
     }
 
@@ -65,8 +75,10 @@ contract Voting is Ownable {
         return candidateListVotes[_candidateId];
     }
 
-    function associateUserToAddress(bytes32 _voterIdentification) external {
+    function associateUserToAddress(bytes32 _voterIdentification) external onlyValidVoter(_voterIdentification) returns(address, bytes32) {
         votersListAddressMap[_voterIdentification] = msg.sender;
+        votersListValidator[_voterIdentification] = true;
+        return (msg.sender, _voterIdentification);
     }
 
     function addCandidate(bytes32 _candidate) external onlyNewCandidate(_candidate)  {
