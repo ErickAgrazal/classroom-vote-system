@@ -47,7 +47,41 @@ contract("Voting contract", accounts => {
     await VotingInstance.vote(0, voterIdentification, { from: accounts[1] });
 
     // If it gets to this point, it's fine!
-    // Refactor possible though... :D
+    // Refactor is possible though... :D
     assert.ok(true);
+  });
+  it("...should be able to retrieve votes.", async () => {
+    const AMOUNT_OF_VOTES_TO_THIS_POINT = 4;
+    const VotingInstance = await Voting.deployed();
+    await VotingInstance.initializeVoting();
+    const VOTES = [
+      { id: web3.utils.utf8ToHex(VOTERS_IDENTIFICATION[10]), from: accounts[2], to: 0 },
+      { id: web3.utils.utf8ToHex(VOTERS_IDENTIFICATION[11]), from: accounts[3], to: 0 },
+      { id: web3.utils.utf8ToHex(VOTERS_IDENTIFICATION[12]), from: accounts[4], to: 0 },
+      { id: web3.utils.utf8ToHex(VOTERS_IDENTIFICATION[13]), from: accounts[5], to: 1 },
+      { id: web3.utils.utf8ToHex(VOTERS_IDENTIFICATION[14]), from: accounts[6], to: 1 },
+      { id: web3.utils.utf8ToHex(VOTERS_IDENTIFICATION[15]), from: accounts[7], to: 2 },
+    ];
+
+    // associateUserToAddress
+    for(let i = 0; i < VOTES.length; i++){
+      await VotingInstance.associateUserToAddress(VOTES[i].id, { from: VOTES[i].from });  
+    }
+
+    // Vote
+    for(let i = 0; i < VOTES.length; i++){
+      await VotingInstance.vote(VOTES[i].to, VOTES[i].id, { from: VOTES[i].from });
+    }
+
+    await VotingInstance.finishVoting();
+    
+    const resp = await VotingInstance.getCandidatesVotes( { from: accounts[0] });
+    resp[0] = resp[0].map((el) => web3.utils.hexToUtf8(el));
+    resp[1] = resp[1].map((el) => el.toNumber());
+
+    // If it gets to this point, it's fine!
+    // Refactor is possible though... :D
+    // Refactored =D
+    assert.equal(resp[1][0], AMOUNT_OF_VOTES_TO_THIS_POINT);
   });
 });

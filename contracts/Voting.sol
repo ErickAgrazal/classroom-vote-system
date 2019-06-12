@@ -19,18 +19,19 @@ contract Voting is Ownable {
     uint8 private candidatesListCounter = 0;
     uint8[9] private cantidateListId;
     bytes32[9] private cantidateListName;
+    uint8[9] private candidateListVotes;
     // Candidates utilities
-    mapping(uint8 => uint8) private candidateListVotes;
     mapping(bytes32 => bool) private candidateValidator;
 
     // Voters map
     uint8[27] private votersListId;
     bytes32[27] private votersListIdentification;
     bytes32[27] private votersListName;
-    bool[27] private votersListVoted;
+
     // Voters utilities
     mapping(bytes32 => address) private votersListAddressMap;
     mapping(bytes32 => bool) private votersListValidator;
+    mapping(bytes32 => bool) private votersListVoted;
     mapping(address => uint8) private votersListIdMap;
 
     // Voting starter and finisher
@@ -60,6 +61,9 @@ contract Voting is Ownable {
         // Candidates initialization
         cantidateListId = _cantidateListId;
         cantidateListName = _cantidateListName;
+        for( uint8 i = 0 ; i < 9; i++){
+            candidateListVotes[i] = 0;
+        }
     }
 
     /**
@@ -79,8 +83,14 @@ contract Voting is Ownable {
         return (cantidateListId, cantidateListName);
     }
 
-    function getCandidatesVotes(uint8 _candidateId) external view onlyOwner returns(uint8) {
+    function getCandidateVotes(uint8 _candidateId) external view returns(uint8) {
+        require(votingIsOpen == false, "Solo se pueden ver los votos cuando la votación esté cerrada.");
         return candidateListVotes[_candidateId];
+    }
+
+    function getCandidatesVotes() external view returns(bytes32[9] memory, uint8[9] memory) {
+        require(votingIsOpen == false, "Solo se pueden ver los votos cuando la votación esté cerrada.");
+        return (cantidateListName, candidateListVotes);
     }
 
     function associateUserToAddress(bytes32 _voterIdentification) external onlyValidVoter(_voterIdentification) returns(address, bytes32) {
@@ -107,13 +117,14 @@ contract Voting is Ownable {
         // Validadtions
         require(votingIsOpen == true, "Solo se puede votar cuando el tiempo de votación este activo.");
         require(votersListAddressMap[_voterIdentification] == msg.sender, "El votante solo puede votar usando una el address que validó.");
-        require(votersListVoted[votersListIdMap[msg.sender]] == false, "Votante solo puede votar una vez.");
+        require(votersListValidator[_voterIdentification] == true, "Votante debe haber sido validado.");
+        require(votersListVoted[_voterIdentification] == false, "Votante solo puede votar una vez.");
 
         // Incrementing voting count
         uint8 _candidateCount = candidateListVotes[_candidateId] + 1;
 
         // Removing the possibility for this voter to vote again
-        votersListVoted[votersListIdMap[msg.sender]] = true;
+        votersListVoted[_voterIdentification] = true;
 
         // Asigning the new votes to the candidate
         candidateListVotes[_candidateId] = _candidateCount;
