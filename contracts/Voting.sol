@@ -16,12 +16,12 @@ contract Ownable {
 
 contract Voting is Ownable {
     // Candidates map
-    uint8 candidatesListCounter = 0;
+    uint8 private candidatesListCounter = 0;
     uint8[9] private cantidateListId;
     bytes32[9] private cantidateListName;
     // Candidates utilities
-    mapping(uint8 => uint8) candidateListVotes;
-    mapping(bytes32 => bool) candidateValidator;
+    mapping(uint8 => uint8) private candidateListVotes;
+    mapping(bytes32 => bool) private candidateValidator;
 
     // Voters map
     uint8[27] private votersListId;
@@ -81,7 +81,7 @@ contract Voting is Ownable {
         return (msg.sender, _voterIdentification);
     }
 
-    function addCandidate(bytes32 _candidate) external onlyNewCandidate(_candidate)  {
+    function addCandidate(bytes32 _candidate) external onlyOwner onlyNewCandidate(_candidate)  {
         // Storing candidate
         cantidateListId[candidatesListCounter] = candidatesListCounter;
         cantidateListName[candidatesListCounter] = _candidate;
