@@ -10,6 +10,10 @@
   },
   "devDependencies": {},
   "scripts": {
+    "ganache-cli": "ganache-cli",
+    "compile": "cd .. && truffle compile && cd client",
+    "migrate": "npm run compile && cd .. && truffle compile && cd client",
+    "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
