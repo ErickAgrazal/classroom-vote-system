@@ -7,8 +7,6 @@ services:
       dockerfile: ./docker/express/Dockerfile
     container_name: vota_ex01
     command: bash -c "npm install --quiet && nodemon app.js"
-    depends_on:
-      - db
     env_file:
      - ./.env.production
     hostname: vota_ex01
