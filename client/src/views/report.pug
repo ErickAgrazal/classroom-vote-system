@@ -1,0 +1,80 @@
+extends includes/base
+
+block content
+    .col-6.mt-5.offset-3
+        .row
+            .col-12.text-center
+                h1 Reporte
+                small
+                    a(href="/") Ir al menú principal
+        hr
+        .row.mt-5
+            .col-12
+                table.table.js-table
+                    thead.thead-dark
+                        tr                     
+                            th(scope='col') Nombre del Candidato
+                            th(scope='col') Cantidad de votos
+                    tbody
+
+block extra_js
+    script.
+        (function(){
+            var App = {
+                init: async function(){
+                    await App.associateWeb3Provider();
+                    await App.buildCandidateTable();
+                },
+                buildCandidateTable: async function(){},
+                config: {
+                    account: undefined,
+                    web3: undefined,
+                    contractAddress: '#{contractAddress}'
+                },
+                htmlElements: {
+                    candidateTable: $('.js-table'),
+                },
+                associateWeb3Provider: async function(){
+                    // Load WEB3
+                    let accounts = undefined;
+                    if (window.ethereum) { // for modern DApps browser
+                        web3 = new Web3(ethereum);
+                        try {
+                            await ethereum.enable();
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    } else if (web3) { // for old DApps browser
+                        web3 = new Web3(web3.currentProvider);
+                    } else {
+                        console.log('Non-Ethereum browser detected. You should consider trying MetaMask!');
+                    }
+
+                    if(web3!== 'undefined'){
+                        accounts = await web3.eth.getAccounts();
+                    }
+
+                    App.config.web3 = web3;
+                    App.config.account = accounts[0];
+                },
+                requests: {
+                    fetchCandidatesFromContract: async function(){
+                         // Reload account
+                        App.associateWeb3Provider();
+
+                        // Continue
+                        const contractJSON = await App.requests.fetchContract();
+                        const { abi } = contractJSON;
+                        const votingContract = new App.config.web3.eth.Contract(abi, App.config.contractAddress);
+                        return votingContract.methods.getCandidates().call({from: App.config.account});
+                    },
+                    fetchContract: async function(){
+                        return $.ajax({
+                            url: 'api/contract',
+                            method: 'POST'
+                        });
+                    }
+                },
+            };
+            App.init();
+        })();

@@ -24,9 +24,9 @@ contract Voting is Ownable {
     mapping(bytes32 => bool) private candidateValidator;
 
     // Voters map
-    uint8[27] private votersListId;
-    bytes32[27] private votersListIdentification;
-    bytes32[27] private votersListName;
+    uint8[28] private votersListId;
+    bytes32[28] private votersListIdentification;
+    bytes32[28] private votersListName;
 
     // Voters utilities
     mapping(bytes32 => address) private votersListAddressMap;
@@ -44,9 +44,9 @@ contract Voting is Ownable {
     /**
      * Constructor. Initialize the voters.
      */
-    constructor(uint8[27] memory _votersListId,
-                bytes32[27] memory _votersListIdentification,
-                bytes32[27] memory _votersListName,
+    constructor(uint8[28] memory _votersListId,
+                bytes32[28] memory _votersListIdentification,
+                bytes32[28] memory _votersListName,
                 uint8[9] memory _cantidateListId,
                 bytes32[9] memory _cantidateListName) public {
 
@@ -54,7 +54,7 @@ contract Voting is Ownable {
         votersListId = _votersListId;
         votersListIdentification = _votersListIdentification;
         votersListName = _votersListName;
-        for( uint8 i = 0 ; i < 27; i++){
+        for( uint8 i = 0 ; i < 28; i++){
             votersListValidator[votersListIdentification[i]] = 1;
         }
 

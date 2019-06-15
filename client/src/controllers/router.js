@@ -21,6 +21,10 @@ router.get('/votar', async (req, res) => {
     res.render('vote', { contractAddress });
 });
 
+router.get('/reporte', async (req, res) => {
+    res.render('report', { contractAddress });
+});
+
 router.get('/panel', async (req, res) => {
     res.render('panel', { contractAddress });
 });
