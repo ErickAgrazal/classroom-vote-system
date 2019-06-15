@@ -12,7 +12,8 @@
   "scripts": {
     "ganache-cli": "ganache-cli",
     "compile": "cd .. && truffle compile && cd client",
-    "migrate": "npm run compile && cd .. && truffle compile && cd client",
+    "migrate": "npm run compile && cd .. && truffle migrate && cd client",
+    "migrate-to-rinkeby": "npm run compile && cd .. && truffle migrate --network rinkeby && cd client",
     "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

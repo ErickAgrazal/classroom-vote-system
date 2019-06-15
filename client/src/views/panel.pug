@@ -4,11 +4,20 @@ block content
     .col-8.mt-5.offset-2
         .row
             .col-12.text-center
-                h1 Panel de Administración
-        .row
-            .form-group
-                input.btn.btn-primary.js-btn-open-vote(type="button", value="Abrir votación")
-                input.btn.btn-danger.js-btn-close-vote.ml-2(type="button", value="Cerrar votación")
+                h1 
+                    | Panel de Administración
+                small
+                    a(href="/") Ir al menú principal
+                br
+                small.font-12 Panel súper seguro de administración. ;)
+        hr
+        .row.mt-5
+            .col-4.offset-4
+                .row
+                    .col-12
+                        .form-group
+                            input.btn.btn-primary.btn-block.js-btn-open-vote(type="button", value="Abrir votación")
+                            input.btn.btn-danger.btn-block.js-btn-close-vote(type="button", value="Cerrar votación")
             table.table(style='display:none;')
                 thead.thead-dark
                     tr                     

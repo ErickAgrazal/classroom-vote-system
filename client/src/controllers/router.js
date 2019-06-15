@@ -6,7 +6,9 @@ const router = express.Router();
 const file = fs.readFileSync(path.join(__dirname, '..', 'contracts/Voting.json'));
 const contract = JSON.parse(file);
 
-
+router.get('/', (req, res) => {
+    res.render('dashboard');
+});
 
 router.get('/registrarse', (req, res) =>{
     res.render('register');

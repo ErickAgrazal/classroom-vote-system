@@ -11382,10 +11382,16 @@
       "links": {},
       "address": "0x4c3CBe24f3dfb766A994F43FB719bc93c6fB5572",
       "transactionHash": "0xf27add0fdeaefc792f3a9b1989128431f25083feed72d88627f77e93196a8adb"
+    },
+    "1560553659197": {
+      "events": {},
+      "links": {},
+      "address": "0x55533329669619f3BAe39E14e54Ec0dFf5DB9bF9",
+      "transactionHash": "0xad45dc64c8840c41dbc718d685c1193fdba56cdcbedf5195366a3cfb90245995"
     }
   },
   "schemaVersion": "3.0.11",
-  "updatedAt": "2019-06-14T23:13:25.366Z",
+  "updatedAt": "2019-06-14T23:19:49.318Z",
   "devdoc": {
     "methods": {}
   },

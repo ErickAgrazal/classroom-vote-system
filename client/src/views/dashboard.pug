@@ -1,0 +1,15 @@
+extends includes/base
+
+block content
+    .col-8.mt-5.offset-2
+        .row
+            .col-12.text-center
+                h1 Menú principal
+                small Sistema de Votación. Alpha. ¡Súper hackeable!. ¿Quién ganará la pizza?
+        hr
+        .row.mt-5
+          .col-4.offset-4
+            a.btn.btn-primary.btn-block(href="/registrarse") Registrarse
+            a.btn.btn-success.btn-block(href="/votar") Votar
+            hr
+            a.btn.btn-danger.btn-block(href="/panel") Administrador

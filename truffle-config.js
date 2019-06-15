@@ -1,9 +1,7 @@
+require('dotenv').config();
 const path = require("path");
-
 const HDWalletProvider = require("truffle-hdwallet-provider");
-
-const mnemonic = "cart crew runway fog excite almost anxiety income account balcony sound castle";
-
+const mnemonic = process.env.MNEMONIC;
 
 module.exports = {
   // See <http://truffleframework.com/docs/advanced/configuration>
@@ -17,7 +15,7 @@ module.exports = {
       gas: 4612388,
       gasPrice: 25000000000
     },
-    ropsten: {
+    rinkeby: {
       provider: function() {
         return new HDWalletProvider(mnemonic, "https://rinkeby.infura.io/v3/118f1f44a28c478baf0efad23ceaab5f")
       },

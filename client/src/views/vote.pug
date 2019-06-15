@@ -1,21 +1,26 @@
 extends includes/base
 
 block content
-    .col-8.mt-5.offset-2
+    .col-6.mt-5.offset-3
         .row
             .col-12.text-center
                 h1 Votar
-        .row
-            form
-                .form-group
-                    label(for='cedula') Ingrese su Cedula
-                    input#cedula(type="text", name="cedula")
-            table.table
-                thead.thead-dark
-                    tr                     
-                        th(scope='col') Nombre del Candidato
-                        th(scope='col') Votar
-                tbody
+                small
+                    a(href="/") Ir al menú principal
+        hr
+        .row.mt-5
+            .col-12
+                form
+                    .form-group
+                        label(for='cedula') Ingrese su Cedula:
+                        input#cedula.form-control(type="text", name="cedula")
+            .col-12
+                table.table
+                    thead.thead-dark
+                        tr                     
+                            th(scope='col') Nombre del Candidato
+                            th(scope='col') Votar
+                    tbody
 
 block extra_js
     script.
