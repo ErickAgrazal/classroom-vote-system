@@ -1368,63 +1368,15 @@
     "version": "0.5.8+commit.23d335f2.Emscripten.clang"
   },
   "networks": {
-    "4": {
-      "events": {},
-      "links": {},
-      "address": "0xecD30B9121a013aAb8BAD30E6ee4b40654FE0303",
-      "transactionHash": "0xc548d0ca1dc4047957024c69d7455b6c7e8f1c6d2dcea123f4ad808f0960a452"
-    },
     "5777": {
       "events": {},
       "links": {},
-      "address": "0x974a010a9B3C35Eb6Dc92636d46904dB7C96b666",
-      "transactionHash": "0x57ced5841cc81aae4aab857036b5557cca83bf871afec8a1e3cb6e84241ab575"
-    },
-    "1560368756598": {
-      "events": {},
-      "links": {},
-      "address": "0xC457BBF9473570C8bC5042e97212DDB8612bf112",
-      "transactionHash": "0xa589533201dabb65308fdd0c46f58a36617f00d0292d43e446172b7c2291371b"
-    },
-    "1560372939568": {
-      "events": {},
-      "links": {},
-      "address": "0x3f5AbaC699FCc472D71346adB29A5fDb7f9D8051",
-      "transactionHash": "0xebdc4569bb34d955141996cc6d15d87bfe4ea1fb3dd399929f501994b377e986"
-    },
-    "1560376409272": {
-      "events": {},
-      "links": {},
-      "address": "0x441Be7410b29BC583744A0eC1c8e1C692Ada55EE",
-      "transactionHash": "0x174afe0b59ee1a1f54f8f7f0e6e6002357a1e16f97be5e8657a55fda6b63ad7f"
-    },
-    "1560377489288": {
-      "events": {},
-      "links": {},
-      "address": "0x8018a4a27bB2243819210aE8A52CBfA9e92c0f47",
-      "transactionHash": "0xc0e436cd7f2bcfc5655fb13ef2adc78751018315a61fa616a8d5b85d8e294e7a"
-    },
-    "1560378185239": {
-      "events": {},
-      "links": {},
-      "address": "0xBD91AA95C66A23E832601e610AA4C7a4FAb210BC",
-      "transactionHash": "0x7e3e2de45bef2f7cce2eef06e83cf98db6b3fec58c1bff2facf19ec786d5a9e0"
-    },
-    "1560378416415": {
-      "events": {},
-      "links": {},
-      "address": "0x0F60ecfc76C1Aa805463469f7209833780bfEe7D",
-      "transactionHash": "0x444b8677be863587f17e7be0bbf603e69808841408a7297926ce92fd15ba0218"
-    },
-    "1560553659197": {
-      "events": {},
-      "links": {},
-      "address": "0x683691570d16A10f7f6CE53bD8f689Ee41aA6c6A",
-      "transactionHash": "0x40ed22f77c1b4287bac4ec06ff1313813065309fb8d054e8876c7c480f312640"
+      "address": "0xcD5B773DaaD94729e43f934ab848e3De5bE4F86E",
+      "transactionHash": "0x744994dd35322059e27afe848d01fcd4460b8c891deef89622148429445f74b7"
     }
   },
   "schemaVersion": "3.0.10",
-  "updatedAt": "2019-06-15T00:59:36.020Z",
+  "updatedAt": "2019-06-15T01:28:23.173Z",
   "devdoc": {
     "methods": {}
   },
