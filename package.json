@@ -1,0 +1,27 @@
+{
+  "name": "classroom-vote-system",
+  "version": "0.0.9",
+  "description": "Proyecto que sirve para realizar una votación dentro de un salón de clases usando Ethereum como backend.",
+  "main": "census.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "truffle-hdwallet-provider": "^1.0.10"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ErickAgrazal/classroom-vote-system.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ErickAgrazal/classroom-vote-system/issues"
+  },
+  "homepage": "https://github.com/ErickAgrazal/classroom-vote-system#readme"
+}
