@@ -11340,58 +11340,9 @@
     "name": "solc",
     "version": "0.5.8+commit.23d335f2.Emscripten.clang"
   },
-  "networks": {
-    "4": {
-      "events": {},
-      "links": {},
-      "address": "0xbD75C6535e3A5C6e2a081e4A23616130Bf247132",
-      "transactionHash": "0x72ac8086bc7d70b4938d1b02d07a26042790b7eff74f8b82158eaaaeda22d879"
-    },
-    "1560368756598": {
-      "events": {},
-      "links": {},
-      "address": "0x99136F30abBFdCd875ef314A606179a608AFa0EE",
-      "transactionHash": "0x541a79156260ecb7f554396096ff8b0f710eac726b07c53b94a11f14ea4b3711"
-    },
-    "1560372939568": {
-      "events": {},
-      "links": {},
-      "address": "0x2f69Dc00bdB872467F4B556aE9144E31d8cC98c7",
-      "transactionHash": "0x1c778b64633aed43dec931f11c87901c0f558d21b6b364d29c99f548c30db7e8"
-    },
-    "1560376409272": {
-      "events": {},
-      "links": {},
-      "address": "0x4ee1A31D1C89e0900089E5BbeB60E822367d1986",
-      "transactionHash": "0x877366f04a58dada3563546139a10accc2fd1b509015abdb5a59178f917f5984"
-    },
-    "1560377489288": {
-      "events": {},
-      "links": {},
-      "address": "0x64c29ea94ff037477D6213782FEAFB036201C836",
-      "transactionHash": "0x07e6b460e481b88fa6aeda3629dcb45021c9aa116485f71433aea75a118af98e"
-    },
-    "1560378185239": {
-      "events": {},
-      "links": {},
-      "address": "0x8B0f7B9f61a521C7306877404F7146b2Ba226123",
-      "transactionHash": "0xdea1ade2fcbc57971662c1eddf10e82b1277263851121256bb7946d8db4fee5b"
-    },
-    "1560378416415": {
-      "events": {},
-      "links": {},
-      "address": "0x4c3CBe24f3dfb766A994F43FB719bc93c6fB5572",
-      "transactionHash": "0xf27add0fdeaefc792f3a9b1989128431f25083feed72d88627f77e93196a8adb"
-    },
-    "1560553659197": {
-      "events": {},
-      "links": {},
-      "address": "0x55533329669619f3BAe39E14e54Ec0dFf5DB9bF9",
-      "transactionHash": "0xad45dc64c8840c41dbc718d685c1193fdba56cdcbedf5195366a3cfb90245995"
-    }
-  },
+  "networks": {},
   "schemaVersion": "3.0.11",
-  "updatedAt": "2019-06-15T00:31:31.886Z",
+  "updatedAt": "2019-06-15T01:55:01.141Z",
   "devdoc": {
     "methods": {}
   },

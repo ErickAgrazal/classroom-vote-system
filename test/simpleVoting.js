@@ -1,7 +1,7 @@
 const Voting = artifacts.require("./Voting.sol");
 const { getVoters, getCandidates } = require('../census');
 
-const { VOTERS_ID, VOTERS_IDENTIFICATION, VOTERS_NAME } = getVoters(web3);
+const { VOTERS_IDENTIFICATION } = getVoters(web3);
 
 contract("Voting contract", accounts => {
   it("...should have deployed the instance.", async () => {
