@@ -12,6 +12,10 @@ block content
                 small.font-12 Panel súper seguro de administración. ;)
         hr
         .row.mt-5
+                .offset-3
+                    h2 Estado del proceso de votacion:
+                        h3.status ---
+        .row.mt-5
             .col-4.offset-4
                 .row
                     .col-12
@@ -31,6 +35,7 @@ block extra_js
             var App = {
                 init: async function(){
                     await App.bindEvents();
+                    await App.getVotingStatus();
                 },
                 drawResultsTable: async function(){
                     let index;
@@ -72,6 +77,10 @@ block extra_js
                     btnOpen: $('.js-btn-open-vote'),
                     btnClose: $('.js-btn-close-vote')
                 },
+                getVotingStatus: async function(){
+                    const status = await App.requests.fetchVotingStatus();
+                    status ? $('.status').addClass('text-success').text('abierto') : $('.status').addClass('text-danger').text('cerrado')
+                },
                 bindEvents: async function(){
                     await App.associateWeb3Provider();
                     App.htmlElements.btnOpen.on('click', App.eventListeners.onBtnOpenClick);
@@ -112,7 +121,7 @@ block extra_js
                             .then( async (result) => {
                                 if (result.value){
                                     await App.requests.closeVotePeriod();
-                                    App.drawResultsTable();
+                                    // App.drawResultsTable();
                                 }
                             });   
                     },
@@ -153,7 +162,17 @@ block extra_js
                             url: 'api/contract',
                             method: 'POST'
                         });
-                    }
+                    },
+                    fetchVotingStatus: async function(){
+                         // Reload account
+                        App.associateWeb3Provider();
+
+                        // Continue
+                        const contractJSON = await App.requests.fetchContract();
+                        const { abi } = contractJSON;
+                        const votingContract = new App.config.web3.eth.Contract(abi, App.config.contractAddress);
+                        return votingContract.methods.getVotingStatus().call({from: App.config.account});
+                    },
                 },
             };
             App.init();

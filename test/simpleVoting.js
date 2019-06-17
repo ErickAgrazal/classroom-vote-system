@@ -17,12 +17,12 @@ contract("Voting contract", accounts => {
     assert.equal(CANDIDATES_NAME.map((el) => web3.utils.hexToUtf8(el))[CANDIDATES_NAME.length],
                  candidates[1].map((el) => web3.utils.hexToUtf8(el))[candidates.length]);
   });
-  it("...should not be able to let voters add twice the same ID.", async () => {
+  it("...should not be able to let voters associate twice the same ID.", async () => {
     const VotingInstance = await Voting.deployed();
-    const resp1 = await VotingInstance.associateUserToAddress(VOTERS_IDENTIFICATION[0]);
+    await VotingInstance.associateUserToAddress(VOTERS_IDENTIFICATION[0]);
     try {
-      const resp2 = await VotingInstance.associateUserToAddress(VOTERS_IDENTIFICATION[0]);
-      assert.ok(false, "The contract shoult not let voters add twice the same ID.");
+      await VotingInstance.associateUserToAddress(VOTERS_IDENTIFICATION[0]);
+      assert.ok(false);
     } catch (error) {
       assert.ok(true);
     }
@@ -41,10 +41,11 @@ contract("Voting contract", accounts => {
   });
   it("...should be able to receive votes.", async () => {
     const VotingInstance = await Voting.deployed();
-    const voterIdentification = web3.utils.utf8ToHex(VOTERS_IDENTIFICATION[0]);
+    const voterIdentification = VOTERS_IDENTIFICATION[1];
+    const candidateId = 0;
     await VotingInstance.initializeVoting();
     await VotingInstance.associateUserToAddress(voterIdentification, { from: accounts[1] });
-    await VotingInstance.vote(0, voterIdentification, { from: accounts[1] });
+    await VotingInstance.vote(candidateId, voterIdentification, { from: accounts[1] });
 
     // If it gets to this point, it's fine!
     // Refactor is possible though... :D
@@ -55,12 +56,12 @@ contract("Voting contract", accounts => {
     const VotingInstance = await Voting.deployed();
     await VotingInstance.initializeVoting();
     const VOTES = [
-      { id: web3.utils.utf8ToHex(VOTERS_IDENTIFICATION[10]), from: accounts[2], to: 0 },
-      { id: web3.utils.utf8ToHex(VOTERS_IDENTIFICATION[11]), from: accounts[3], to: 0 },
-      { id: web3.utils.utf8ToHex(VOTERS_IDENTIFICATION[12]), from: accounts[4], to: 0 },
-      { id: web3.utils.utf8ToHex(VOTERS_IDENTIFICATION[13]), from: accounts[5], to: 1 },
-      { id: web3.utils.utf8ToHex(VOTERS_IDENTIFICATION[14]), from: accounts[6], to: 1 },
-      { id: web3.utils.utf8ToHex(VOTERS_IDENTIFICATION[15]), from: accounts[7], to: 2 },
+      { id: VOTERS_IDENTIFICATION[10], from: accounts[2], to: 0 },
+      { id: VOTERS_IDENTIFICATION[11], from: accounts[3], to: 0 },
+      { id: VOTERS_IDENTIFICATION[12], from: accounts[4], to: 0 },
+      { id: VOTERS_IDENTIFICATION[13], from: accounts[5], to: 1 },
+      { id: VOTERS_IDENTIFICATION[14], from: accounts[6], to: 1 },
+      { id: VOTERS_IDENTIFICATION[15], from: accounts[7], to: 2 },
     ];
 
     // associateUserToAddress
