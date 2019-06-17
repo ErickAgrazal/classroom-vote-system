@@ -7,7 +7,6 @@ const file = fs.readFileSync(path.join(__dirname, '..', 'contracts/Voting.json')
 const contract = JSON.parse(file);
 
 const contractAddress = process.env.CONTRACT_ADDRESS;
-console.log(contractAddress);
 
 router.get('/', (req, res) => {
     res.render('dashboard', { contractAddress });

@@ -79,7 +79,7 @@ block extra_js
                 },
                 getVotingStatus: async function(){
                     const status = await App.requests.fetchVotingStatus();
-                    status ? $('.status').addClass('text-success').text('abierto') : $('.status').addClass('text-danger').text('cerrado')
+                    status ? $('.status').addClass('text-success').text('Abierto') : $('.status').addClass('text-danger').text('Cerrado')
                 },
                 bindEvents: async function(){
                     await App.associateWeb3Provider();
@@ -171,7 +171,7 @@ block extra_js
                         const contractJSON = await App.requests.fetchContract();
                         const { abi } = contractJSON;
                         const votingContract = new App.config.web3.eth.Contract(abi, App.config.contractAddress);
-                        return votingContract.methods.getVotingStatus().call({from: App.config.account});
+                        return votingContract.methods.getVotingStatus().call({ from: App.config.account });
                     },
                 },
             };

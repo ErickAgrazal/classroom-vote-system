@@ -6,12 +6,17 @@ block content
             .col-12.text-center
                 h1 
                     | Resultados
-            table.table(style='display:none;')
-                thead.thead-dark
-                    tr                     
-                        th(scope='col') Nombre del Candidato
-                        th(scope='col') Cantidad de Votos
-                tbody
+                small
+                    a(href="/") Ir al menú principal
+        hr
+        .row
+            .col-12
+                table.table(style='display:none;')
+                    thead.thead-dark
+                        tr                     
+                            th(scope='col') Nombre del Candidato
+                            th(scope='col') Cantidad de Votos
+                    tbody
 
 block extra_js
     script.

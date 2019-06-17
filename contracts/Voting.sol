@@ -27,7 +27,6 @@ contract Voting is Ownable {
     uint8[28] private votersListId;
     bytes32[28] private votersListIdentification;
     bytes32[28] private votersListName;
-
     // Voters utilities
     mapping(bytes32 => address) private votersListAddressMap;
     mapping(bytes32 => uint8) private votersListValidator;
@@ -66,14 +65,11 @@ contract Voting is Ownable {
         }
     }
 
-    /**
-     * We will only be accepting one candidate. The validation is being
-     * done using the candidate name.
-     */
     modifier onlyNewCandidate(bytes32 _candidate){
         require(candidateValidator[_candidate] != true, "Candidato solo puede ser añadido una sola vez.");
         _;
     }
+
     modifier onlyValidVoter(bytes32 _voterIdentification){
         require(votersListValidator[_voterIdentification] == 1, "Votante solo puede ser verificado una sola vez.");
         _;

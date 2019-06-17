@@ -11,9 +11,11 @@ module.exports = {
     development: {
       host: "127.0.0.1",
       port: 8545,
-      network_id: "*", // Match any network id,
+      network_id: 1000,
       gas: 4612388,
-      gasPrice: 25000000000
+      gasPrice: 25000000000,
+      total_accounts: 20,
+      mnemonic
     },
     rinkeby: {
       provider: function() {
