@@ -100,7 +100,9 @@ block extra_js
                     onBtnVoteClick: function(e){
                         Swal.fire(App.controls.swalOptions.voteSwal)
                             .then( (result) => {
-                                if (result.value) App.requests.sendVote($(this).closest('tr').data('id'));
+                                if (result.value) {
+                                    App.requests.sendVote($(e.target).closest('tr').data('id'));
+                                };
                             });   
                     }
                 },
