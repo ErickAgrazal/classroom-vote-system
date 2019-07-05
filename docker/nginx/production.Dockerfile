@@ -1,4 +1,4 @@
-FROM linuxserver/letsencrypt
+FROM nginx:latest
 ADD ./docker/nginx/conf/certbot/production.conf /etc/nginx/conf.d/default.conf
 
 RUN mkdir /staticfiles
