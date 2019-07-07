@@ -15,9 +15,9 @@ Proyecto que sirve para realizar una votación dentro de un salón de clases usa
 3. Ganache CLI
 4. Nodemon
 
-## Iniciar ganache
-`ganache-cli --networkId 1000`
+## Iniciar servidor
+1. La primera vez:
+`vagrant up --provision`
 
-## Iniciar server de desarrollo
-`cd client`
-`npm start`
+2. De la segunda en adelante:
+`vagrant up`
