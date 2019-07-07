@@ -18,8 +18,5 @@ Proyecto que sirve para realizar una votación dentro de un salón de clases usa
 6. Virtualbox
 
 ## Iniciar servidor
-1. La primera vez:
-`vagrant up --provision`
-
-2. De la segunda en adelante:
-`vagrant up`
+1. La primera vez: `vagrant up --provision`
+2. De la segunda en adelante: `vagrant up`
