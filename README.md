@@ -14,6 +14,7 @@ Proyecto que sirve para realizar una votación dentro de un salón de clases usa
 2. NPM
 3. Ganache CLI
 4. Nodemon
+5. Vagrant
 
 ## Iniciar servidor
 1. La primera vez:
