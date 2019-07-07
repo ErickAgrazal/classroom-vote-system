@@ -17,6 +17,13 @@ Proyecto que sirve para realizar una votación dentro de un salón de clases usa
 5. Vagrant
 6. Virtualbox
 
-## Iniciar servidor
+## Comandos para interactuar con el servidor
+#### Iniciar
 1. La primera vez: `vagrant up --provision`
 2. De la segunda en adelante: `vagrant up`
+
+#### Apagar
+1. `vagrant halt`
+
+#### Reiniciar
+1. `vagrant reload`
