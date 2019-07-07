@@ -19,7 +19,7 @@ Proyecto que sirve para realizar una votación dentro de un salón de clases usa
 
 ## Comandos para interactuar con el servidor
 #### Iniciar
-La primera vez: `vagrant up --provision`
+La primera vez: `vagrant up --provision` <br>
 De la segunda en adelante: `vagrant up`
 
 #### Apagar
